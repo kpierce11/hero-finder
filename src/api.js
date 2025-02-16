@@ -19,12 +19,21 @@ const getAuthParams = () => {
 // Function to fetch a character by name 
 export const fetchCharacter = async (name) => {
     try {
-        const response = await axios.get(BASE_URL, {
-            params: { name, ...getAuthParams() }, // ✅ Better axios query params
+        const response = await axios.get(`${baseURL}?name=${name}&${getAuthParams()}`);
+        let results = response.data.data.results;
+
+        // filter out characters that don't have powers
+
+        const powerKeywords = ["powers", "abilities", "superhuman", "mutant", "gamma", "god", "enhanced"];
+
+        results = results.filter(char => {
+            char.description &&
+            powerKeywords.some(keyword => char.description.toLowerCase().includes(keyword));
         });
-        return response.data.data.results;
+
+        return results;
     } catch (error) {
-        console.error("Error fetching character:", error);
+        console.error(error);
         return [];
     }
-};
+};  
