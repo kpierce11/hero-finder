@@ -33,7 +33,7 @@ function App() {
         </Typography>
 
         {/* Dark Mode Toggle */}
-        <div style<{{ textAlign: 'center', marginBottom: '20px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
           <Typography variant="body1">{darkMode ? 'Dark Mode' : 'Light Mode'}</Typography>
         </div>

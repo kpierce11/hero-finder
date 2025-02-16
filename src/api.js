@@ -19,7 +19,7 @@ const getAuthParams = () => {
 // Function to fetch a character by name 
 export const fetchCharacter = async (name) => {
     try {
-        const response = await axios.get(`${baseURL}?name=${name}&${getAuthParams()}`);
+        const response = await axios.get(`${BASE_URL}?name=${name}&${getAuthParams()}`);
         let results = response.data.data.results;
 
         // filter out characters that don't have powers
