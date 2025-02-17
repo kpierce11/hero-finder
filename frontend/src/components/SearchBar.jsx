@@ -10,10 +10,10 @@ const SearchBar = ({ onSearch }) => {
     useEffect(() => {
         const loadNames = async () => {
             try {
-                console.log("Loading character names...");
                 const names = await fetchCharacterNames();
-                console.log("Fetched names:", names);
-                setSuggestions(Array.isArray(names) ? names : []);
+
+                const uniqueNames = [...new Set(names)].sort(); // Remove duplicates
+                setSuggestions(uniqueNames)
             } catch (error) {
                 console.error("Error fetching character names:", error);
             }
@@ -57,27 +57,26 @@ const SearchBar = ({ onSearch }) => {
             margin: "0 auto" 
         }}>
             <Autocomplete
-                freeSolo
-                options={query.length >= 3 ? [...new Set(suggestions)].filter(name => 
-                    typeof name === 'string' && name.toLowerCase().startsWith(query.toLowerCase())
-                ) : []
-                }
-                
-                onInputChange={(event, newInputValue) => setQuery(newInputValue)}
-                onChange={handleSelect}
-                sx={{ flexGrow: 1, minWidth: "300px" }} // Maintain proper size
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        variant="outlined"
-                        label="Search for a Hero"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        onKeyDown={handleKeyPress}
-                        fullWidth
-                    />
-                )}
-            />
+    freeSolo
+    options={suggestions}
+    getOptionLabel={(option) => option} // Ensure proper labeling
+    onChange={handleSelect}
+    onInputChange={(event, newInputValue) => setQuery(newInputValue)}
+    filterOptions={(options) => options.filter((name) => name.toLowerCase().startsWith(query.toLowerCase()))}
+    sx={{ flexGrow: 1, minWidth: "300px" }}
+    renderInput={(params) => (
+        <TextField
+            {...params}
+            variant="outlined"
+            label="Search for a Hero"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyPress}
+            fullWidth
+        />
+    )}
+/>
+
             <Button 
             variant="contained" 
             onClick={() => {
