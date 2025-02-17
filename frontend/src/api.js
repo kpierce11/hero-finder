@@ -1,30 +1,42 @@
-import axios from 'axios';
-import md5 from 'md5';
-
-const publicKey = import.meta.env.VITE_MARVEL_PUBLIC_KEY;
-const privateKey = import.meta.env.VITE_MARVEL_PRIVATE_KEY;
-
-
 const BASE_URL =
   import.meta.env.MODE === "development"
-    ? "http://localhost:5000/api/characters" // Local backend
-    : "https://marvel-backend.onrender.com/api/characters"; // Deployed backend
+    ? "http://localhost:5000/api" // Local backend
+    : "https://your-backend-on-render.com/api"; // Replace with your deployed Render backend
 
+    export const fetchCharacterNames = async () => {
+        try {
+            console.log("Fetching character names from backend...");
+            const response = await fetch(`${BASE_URL}/local-characters`);
+            const names = await response.json();
+            console.log("Fetched character names:", names); // Debugging
+            return Array.isArray(names) ? names : [];
+        } catch (error) {
+            console.error("Error fetching character names:", error);
+            return [];
+        }
+    };
+    
 
-const getAuthParams = () => {
-    const timestamp = new Date().getTime();
-    const hash = md5(`${timestamp}${privateKey}${publicKey}`);
-    return { ts: timestamp, apikey: publicKey, hash };
-};
-
-export const fetchCharacter = async (name) => {
-    try {
-        const response = await axios.get(BASE_URL, {
-            params: { name: name, ...getAuthParams() },
-        });
-        return response.data.data.results;
-    } catch (error) {
-        console.error("Error fetching character:", error);
-        return [];
-    }
-};
+    export const fetchCharacter = async (name) => {
+        try {
+            console.log(`Fetching character from backend: ${name}`);
+            const response = await fetch(`${BASE_URL}/characters?name=${encodeURIComponent(name)}`);
+            const data = await response.json();
+            
+            console.log("Full API response:", data);
+    
+            // Ensure correct extraction of character data
+            if (data && data.data && Array.isArray(data.data.results)) {
+                console.log("Extracted character data:", data.data.results);
+                return data.data.results; //
+            } else {
+                console.warn("Unexpected API response format:", data);
+                return []; // Return empty array if the structure is incorrect
+            }
+        } catch (error) {
+            console.error("Error fetching character:", error);
+            return [];
+        }
+    };
+    
+    

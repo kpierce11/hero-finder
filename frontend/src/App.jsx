@@ -15,9 +15,20 @@ function App() {
     }, []);
 
     const handleSearch = async (name) => {
+        console.log(`handleSearch called with: ${name}`);
+    
         const results = await fetchCharacter(name);
-        setCharacters(results);
+        console.log("Search API returned:", results);
+    
+        if (Array.isArray(results) && results.length > 0) {
+            console.log("Setting characters:", results);
+            setCharacters(results); 
+        } else {
+            console.warn("No character data found.");
+            setCharacters([]); // Clear UI if no data found
+        }
     };
+    
 
     return (
       <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
@@ -74,8 +85,8 @@ function App() {
                       justifyContent="center" 
                       sx={{ width: "100%", display: "flex" }} // Force centering of grid
                   >
-                      {characters.map((character) => (
-                          <Grid2 item key={character.id} xs={12} sm={6} md={4}>
+                      {characters && characters.map((character) => (
+                          <Grid2 item key ={character.id} xs={12} sm={6} md={4}>
                               <CharacterCard character={character} />
                           </Grid2>
                       ))}
